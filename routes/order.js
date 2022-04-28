@@ -5,7 +5,7 @@ const router = require('express').Router();
 router.post('/', verifyTokenAndAuthorization, async (req, res) => {
     const newOrder = new Order( req.body );
     try {
-        const savedOrder = newOrder.save();
+        const savedOrder = await newOrder.save();
         res.status(200).json(savedOrder);
     }
     catch(err) {
@@ -69,11 +69,12 @@ router.get('/', verifyTokenAndAdmin, async (req, res) => {
 router.get('/income', verifyTokenAndAdmin, async (req, res) => {
     const date = new Date();
     const previousMonth = new Date(date.setMonth(date.getMonth() - 2));
+    console.log(previousMonth);
     try {
         const income = await Order.aggregate([
             {
                 $match: {
-                    $createdAt: {
+                    createdAt: {
                         $gte: previousMonth
                     }
                 }
@@ -86,14 +87,17 @@ router.get('/income', verifyTokenAndAdmin, async (req, res) => {
             },
             {
                 $group: {
-                    _id: $month,
+                    _id: "$month",
                     total: { $sum: "$sales" },
                 }
             }
         ]);
-        re.status(200).json(income);
+        res.status(200).json(income);
     }
     catch(err) {
         res.status(500).json(err);
+        console.log(err);
     }
 });
+
+module.exports = router;
