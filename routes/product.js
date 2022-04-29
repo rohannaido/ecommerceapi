@@ -28,7 +28,19 @@ router.get("/", async (req, res) => {
     catch (err) {
         res.status(500).json(err);
     }
-})
+});
+
+//GET ONE PRODUCT
+router.get("/find/:id", async (req, res) => {
+    try {
+        const product = await Product.findById( req.params.id );
+        res.status(200).json(product);
+    }
+    catch(err) {
+        res.status(500).json(err);
+        console.log(err);
+    }
+});
 
 // CREATE PRODUCT
 router.post("/", verifyTokenAndAdmin , async (req, res) => {
