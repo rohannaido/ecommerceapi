@@ -58,10 +58,13 @@ router.post("/", verifyTokenAndAdmin , async (req, res) => {
 //UPDATE PRODUCT
 router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
     try {
-        const updatedProduct = await Product.findOneAndUpdate( req.params.id, { $set: req.body }, { new: true });
+        // console.log("PRODUCT PUT: ID: ", req.params.id);
+        const updatedProduct = await Product.findOneAndUpdate( {_id: req.params.id}, { $set: req.body }, { new: true });
+        // console.log("UPDATED PRODUCT :", updatedProduct);
         res.status(200).json(updatedProduct);
     }
     catch(err) {
+        // console.log(err);
         res.status(500).json(err);
     }
 });
